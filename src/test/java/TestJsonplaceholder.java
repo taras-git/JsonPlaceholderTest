@@ -1,3 +1,4 @@
+import io.restassured.http.ContentType;
 import model.Comment;
 import model.Post;
 import model.User;
@@ -8,6 +9,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.assertj.core.api.SoftAssertions;
+import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.testng.Assert;
@@ -27,6 +29,7 @@ import static utils.Utils.*;
 
 public class TestJsonplaceholder {
 
+    public static final String TITLE = "title";
     private SoftAssertions softAssertions;
     private static final Logger LOG = Logger.getLogger( TestJsonplaceholder.class.getName() );
 
@@ -42,7 +45,7 @@ public class TestJsonplaceholder {
 
 
     @Test
-    public void JsonUserSchemaValidationTest() throws IOException {
+    public void JsonUsersSchemaValidationTest() throws IOException {
         LOG.info("> Running " + new Throwable().getStackTrace()[0].getMethodName());
 
         File userSchema = getUserSchema();
@@ -55,7 +58,7 @@ public class TestJsonplaceholder {
     }
 
     @Test
-    public void JsonPostSchemaValidationTest() throws IOException {
+    public void JsonPostsSchemaValidationTest() throws IOException {
         LOG.info("> Running " + new Throwable().getStackTrace()[0].getMethodName());
 
         File postSchema = getPostSchema();
@@ -198,21 +201,60 @@ public class TestJsonplaceholder {
         LOG.info("users: " + usersLength);
 
         // create new empty user
-        // technically should not be allowed as the user has all fields as "null", but is OK for testing purposes
+        // technically this POST call should not be allowed as all fields are sent as "null", but is OK for our testing purposes
         int createdUserId = given()
                 .when()
-                .contentType("application/json; charset=UTF-8")
+                .contentType(ContentType.JSON)
                 .post(url)
                 .then()
                 .statusCode( HttpStatus.SC_CREATED )
                 .extract()
                 .path("id");
 
-        LOG.info("createdUserId: " + createdUserId);
+        LOG.info("createdUserId: {}" + createdUserId);
 
         // created user's id should be auto-incremented
         Assert.assertEquals(usersLength + 1, createdUserId);
     }
+
+
+    @Test
+    public void givenPatchPosts_thenResponse_200()
+            throws IOException {
+        LOG.info("> Running " + new Throwable().getStackTrace()[0].getMethodName());
+        String url = getPostsUrl().toString() + "/1";
+
+        // get title of 1st post
+        String postOldTitle = given()
+                .when()
+                .get(url)
+                .then()
+                .statusCode( HttpStatus.SC_OK )
+                .extract()
+                .path(TITLE);
+
+        LOG.info("postTitle before: " + postOldTitle);
+
+        // change the title of the 1st post
+        String newTitle = "newShinyTitle";
+        JSONObject newTitleJson = new JSONObject()
+                .put( TITLE, newTitle );
+
+        String newTitleCreated = given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(newTitleJson.toString())
+                .put(url)
+                .then()
+                .statusCode( HttpStatus.SC_OK )
+                .extract()
+                .path(TITLE);
+
+        LOG.info("postTitle after: " + newTitleCreated);
+
+        Assert.assertEquals(newTitleCreated, newTitle);
+    }
+
 
     private Comment[] getComments(String userPostCommentsUrl) {
         Comment[] postComments = given()
