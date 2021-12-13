@@ -17,6 +17,8 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -220,20 +222,20 @@ public class TestJsonplaceholder {
 
     @Test
     public void givenPatchPosts_thenResponse_200()
-            throws IOException {
+            throws IOException, URISyntaxException {
         LOG.info("> Running " + new Throwable().getStackTrace()[0].getMethodName());
-        String url = getPostsUrl().toString() + "/1";
+        URL url = setHost().setPath("/posts/1").build().toURL();
 
         // get title of 1st post
-        String postOldTitle = given()
+        Post firstPost = given()
                 .when()
                 .get(url)
                 .then()
                 .statusCode( HttpStatus.SC_OK )
                 .extract()
-                .path(TITLE);
+                .as(Post.class);
 
-        LOG.info("postTitle before: " + postOldTitle);
+        LOG.info("postTitle before: " + firstPost.getTitle());
 
         // change the title of the 1st post
         String newTitle = "newShinyTitle";
