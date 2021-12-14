@@ -19,10 +19,10 @@ import static utils.Utils.getUsersUrl;
 import static utils.Utils.setHost;
 
 
-public class SmokePutPostTest extends BaseTest {
+public class SmokeCRUDTest extends BaseTest {
 
     public static final String TITLE = "title";
-    private static final Logger LOG = Logger.getLogger( SmokePutPostTest.class.getName() );
+    private static final Logger LOG = Logger.getLogger( SmokeCRUDTest.class.getName() );
 
 
     @Test
