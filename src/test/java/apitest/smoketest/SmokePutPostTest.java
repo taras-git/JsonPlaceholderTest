@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.logging.Logger;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.is;
 import static utils.Utils.getUsersUrl;
 import static utils.Utils.setHost;
 
@@ -97,5 +98,21 @@ public class SmokePutPostTest extends BaseTest {
         LOG.info("postTitle after: " + newTitleCreated);
 
         Assert.assertEquals(newTitleCreated, newTitle);
+    }
+
+    @Test
+    public void givenDeletePosts_thenResponse_200()
+            throws IOException, URISyntaxException {
+        LOG.info("> Running " + new Throwable().getStackTrace()[0].getMethodName());
+        URL url = setHost().setPath("/posts/1").build().toURL();
+
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .delete(url)
+                .then()
+                .statusCode( HttpStatus.SC_OK )
+                .assertThat()
+                .body("size()", is(0));
     }
 }
