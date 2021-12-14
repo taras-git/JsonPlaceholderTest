@@ -1,6 +1,6 @@
 package apitest.smoketest;
 
-import basetest.BaseTest;
+import apitest.basetest.BaseTest;
 import io.restassured.http.ContentType;
 import model.Post;
 import org.apache.http.HttpStatus;

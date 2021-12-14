@@ -1,6 +1,6 @@
 package apitest.smoketest;
 
-import basetest.BaseTest;
+import apitest.basetest.BaseTest;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;

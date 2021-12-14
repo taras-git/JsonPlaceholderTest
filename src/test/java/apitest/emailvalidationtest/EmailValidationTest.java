@@ -1,6 +1,6 @@
 package apitest.emailvalidationtest;
 
-import basetest.BaseTest;
+import apitest.basetest.BaseTest;
 import model.Comment;
 import model.Post;
 import model.User;

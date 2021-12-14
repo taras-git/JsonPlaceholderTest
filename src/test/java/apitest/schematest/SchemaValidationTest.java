@@ -1,6 +1,6 @@
 package apitest.schematest;
 
-import basetest.BaseTest;
+import apitest.basetest.BaseTest;
 import org.testng.annotations.Test;
 
 import java.io.File;

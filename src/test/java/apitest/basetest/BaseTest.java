@@ -1,4 +1,4 @@
-package basetest;
+package apitest.basetest;
 
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
