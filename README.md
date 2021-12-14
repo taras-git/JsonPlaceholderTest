@@ -31,5 +31,5 @@ Test cases divided into 3 categories:
 
 To run the test there are choices:
 - from IDE (IntelliJ): run the appropriate test class
-- from CLI: execute command mvn install from the root folder in a terminal
+- from CLI: execute command "mvn install" from the root folder in a terminal
 
