@@ -23,36 +23,15 @@ public class EmailValidationTest extends BaseTest {
     @Test
     public void givenGetUsername_thenVerifyCommentsEmails() throws IOException {
         LOG.info("> Running " + new Throwable().getStackTrace()[0].getMethodName());
-
-        String usersUrl = getUsersUrl().toString();
-        // get all users
-        User[] users = getUsers(usersUrl);
-
-        // try to get userId of a user with a userName == "Samantha"
         Integer userId = null;
         String userName = getTestProperty("userName");
-        for(User u : users) {
-            if(u.getUsername().equals(userName)) {
-                userId = u.getId();
-                break;
-            }
-        }
 
-        // if userId is not found -> terminate the test
-        if (userId == null) {
-            throw new RuntimeException("Can not find a userId for a user " + userName);
-        }
+        userId = getUserId(userId, userName);
 
         LOG.info("Found userId for " + userName);
 
         // get all userName posts
-        String userPostsUrl = getPostsUrl().setParameter("userId", userId.toString()) .toString();
-        Post[] userPosts = getPosts(userPostsUrl);
-
-        // if posts are empty -> terminate the test
-        if (userPosts.length == 0){
-            throw new RuntimeException("User posts not found!");
-        }
+        Post[] userPosts = getUserPosts(userId);
 
         LOG.info("Found user posts for " + userName);
 
@@ -78,6 +57,37 @@ public class EmailValidationTest extends BaseTest {
             }
         }
         softAssertions.assertAll();
+    }
+
+    private Post[] getUserPosts(Integer userId) throws IOException {
+        String userPostsUrl = getPostsUrl().setParameter("userId", userId.toString()) .toString();
+        Post[] userPosts = getPosts(userPostsUrl);
+
+        // if posts are empty -> terminate the test
+        if (userPosts.length == 0){
+            throw new RuntimeException("User posts not found!");
+        }
+        return userPosts;
+    }
+
+    private Integer getUserId(Integer userId, String userName) throws IOException {
+        String usersUrl = getUsersUrl().toString();
+        // get all users
+        User[] users = getUsers(usersUrl);
+
+        // try to get userId of a user with a userName == "Samantha"
+        for(User u : users) {
+            if(u.getUsername().equals(userName)) {
+                userId = u.getId();
+                break;
+            }
+        }
+
+        // if userId is not found -> terminate the test
+        if (userId == null) {
+            throw new RuntimeException("Can not find a userId for a user " + userName);
+        }
+        return userId;
     }
 
     private Comment[] getComments(String userPostCommentsUrl) {

@@ -1,6 +1,7 @@
 package apitest.smoketest;
 
 import apitest.basetest.BaseTest;
+import model.Root;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
@@ -11,6 +12,7 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static utils.Utils.getPostsUrl;
@@ -55,4 +57,27 @@ public class SmokeGetTest extends BaseTest {
                         .getStatusCode(),
                 equalTo(HttpStatus.SC_OK));
     }
+
+
+    @Test
+    public void truconnectTest() {
+        String url = "https://staging.truconnect.fit/api/config";
+        Root root = getRoot(url);
+
+        LOG.info("ios: " + root.getData().getIosMinVersion());
+        LOG.info("android: " + root.getData().getAndroidMinVersion());
+    }
+
+
+    private Root getRoot(String url) {
+        Root root = given()
+                .when()
+                .get(url)
+                .then()
+                .statusCode(200)
+                .extract()
+                .as(Root.class);
+        return root;
+    }
+
 }

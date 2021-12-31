@@ -9,6 +9,7 @@ public class User {
     private String phone;
     private String website;
     private Company company;
+
     public Integer getId() {
         return id;
     }
